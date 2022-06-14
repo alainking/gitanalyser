@@ -3,8 +3,13 @@
 using System.Text;
 using LibGit2Sharp;
 
-Console.WriteLine(@"Enter the full path for your Git Project in the format c:\dir1\dir2");
+Console.WriteLine(@"Enter the full path for your Git Project in the correct format for you platform");
 var projectDir = Console.ReadLine();
+if (string.IsNullOrEmpty(projectDir))
+{
+  Console.WriteLine("No Repository entered");
+  return;
+}
 var repo = new Repository(projectDir.EndsWith(".git") ? projectDir : projectDir + (projectDir.Contains('\\') ?@"\":@"/")+@".git");
 Console.WriteLine(@"Enter the start date for the analysis (Format YYYY/MM/DD). Leave blank for the past year");
 var startDateInput = Console.ReadLine();
@@ -47,6 +52,8 @@ foreach (var file in modifiedFiles.OrderByDescending(m => m.Occurrence))
   csv.AppendLine(newLine);
 }
 File.WriteAllText(projectDir + (projectDir.Contains('\\') ? @"\" : @"/")+ "git-analysis.csv", csv.ToString());
+Console.WriteLine("Analysis complete. The file git-analysis.csv can be foung in " + projectDir);
+
 
 internal class ModifiedFiles
 {
